@@ -1,5 +1,6 @@
 package com.weishu.upf.dynamic_proxy_hook.app2.hook;
 
+import android.app.Activity;
 import android.app.Instrumentation;
 
 import java.lang.reflect.Field;
@@ -29,5 +30,14 @@ public class HookHelper {
 
         // 偷梁换柱
         mInstrumentationField.set(currentActivityThread, evilInstrumentation);
+    }
+
+
+    public static void attatchContextForActivity(Activity activity) throws Exception{
+
+        Field field = Activity.class.getDeclaredField("mInstrumentation");
+        field.setAccessible(true);
+        Instrumentation original = (Instrumentation)field.get(activity);
+        field.set(activity,new EvilInstrumentation( original ) );
     }
 }
